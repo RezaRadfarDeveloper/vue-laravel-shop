@@ -14,9 +14,9 @@ return new class extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
-            $table->string('title',2000);
-            $table->string('slug',2000);
-            $table->string('image',2000)->nullable();
+            $table->string('title');
+            $table->string('slug');
+            $table->string('image')->nullable();
             $table->decimal('price', 10,2);
             $table->longText('description')->nullable();
             $table->foreignIdFor(User::class, 'created_by')->nullable();           
