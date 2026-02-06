@@ -24,3 +24,18 @@ export const logout = ({ commit }) => {
         return response;
     });
 };
+
+export const getProducts = ({ commit }, { url = null }) => {
+    commit("setProducts", [true]);
+    url = url || "/product";
+    return axiosClient
+        .get(url)
+        .then((response) => {
+            console.log(response.data);
+
+            commit("setProducts", [false, response.data]);
+        })
+        .catch((err) => {
+            commit("setProducts", [false]);
+        });
+};

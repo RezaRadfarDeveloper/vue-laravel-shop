@@ -6,6 +6,7 @@ import ResetPassword from "../view/ResetPassword.vue";
 import RequestPassword from "../view/RequestPassword.vue";
 import store from "../store";
 import NotFound from "../view/NotFound.vue";
+import Products from "../view/products/Products.vue";
 
 const routes = [
     {
@@ -15,6 +16,11 @@ const routes = [
         meta: {
             requiresAuth: true,
         },
+    },
+    {
+        path: "/products",
+        name: "products",
+        component: Products,
     },
     {
         path: "/home",
