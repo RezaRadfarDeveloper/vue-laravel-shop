@@ -6,9 +6,7 @@
         <Spinner />
     </div>
     <div v-else class="flex justify-between items-center">
-        <NavBar />
-        <button @click="logout">logout</button>
-        <router-link :to="{ name: 'app.products' }">products</router-link>
+        <h1>Dashboard</h1>
     </div>
 </template>
 
@@ -16,12 +14,10 @@
 import { useRouter } from "vue-router";
 import store from "../store";
 import { onMounted, ref } from "vue";
-import NavBar from "../components/NavBar.vue";
 import Spinner from "../ui/spinner.vue";
 
 export default {
     components: {
-        NavBar,
         Spinner,
     },
     setup() {
