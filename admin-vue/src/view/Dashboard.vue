@@ -8,7 +8,7 @@
     <div v-else class="flex justify-between items-center">
         <NavBar />
         <button @click="logout">logout</button>
-        <router-link :to="{ name: 'products' }">products</router-link>
+        <router-link :to="{ name: 'app.products' }">products</router-link>
     </div>
 </template>
 

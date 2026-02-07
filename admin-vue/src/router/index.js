@@ -1,32 +1,36 @@
 import { createRouter, createWebHistory } from "vue-router";
 import Dashboard from "../view/Dashboard.vue";
-import Home from "../view/Home.vue";
 import Login from "../view/Login.vue";
 import ResetPassword from "../view/ResetPassword.vue";
 import RequestPassword from "../view/RequestPassword.vue";
 import store from "../store";
 import NotFound from "../view/NotFound.vue";
 import Products from "../view/products/Products.vue";
+import AppLayout from "../ui/AppLayout.vue";
 
 const routes = [
     {
-        path: "/dashboard",
-        name: "dashboard",
-        component: Dashboard,
-        meta: {
-            requiresAuth: true,
-        },
+        path: "/app",
+        name: "app",
+        component: AppLayout,
+        children: [
+            {
+                path: "dashboard",
+                name: "app.dashboard",
+                component: Dashboard,
+                meta: {
+                    requiresAuth: true,
+                },
+            },
+
+            {
+                path: "products",
+                name: "app.products",
+                component: Products,
+            },
+        ],
     },
-    {
-        path: "/products",
-        name: "products",
-        component: Products,
-    },
-    {
-        path: "/home",
-        name: "home",
-        component: Home,
-    },
+
     {
         path: "/login",
         name: "login",
@@ -67,7 +71,7 @@ router.beforeEach((to, from, next) => {
     if (to.meta.requiresAuth && !store.state.user.token) {
         next({ name: "login" });
     } else if (to.meta.requiresGuest && store.state.user.token) {
-        next({ name: "dashboard" });
+        next({ name: "app.dashboard" });
     } else {
         next();
     }
