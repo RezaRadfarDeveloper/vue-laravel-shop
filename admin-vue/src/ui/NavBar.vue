@@ -10,18 +10,22 @@
         </button>
 
         <nav class="flex justify-around items-center w-[21rem]">
-            <div class="flex cursor-pointer hover:bg-black/5 p-2 rounded-sm">
+            <div
+                class="flex cursor-pointer hover:bg-indigo-600 px-2 py-1 hover:text-white rounded-sm"
+            >
                 <span class="w-6 mr-2"><UserIcon /></span>
                 Profile
             </div>
             <div
                 @click="logout"
-                class="flex cursor-pointer hover:bg-black/5 p-2 rounded-sm"
+                class="flex cursor-pointer hover:bg-indigo-600 px-2 py-1 hover:text-white rounded-sm"
             >
                 <span class="w-6 mr-2"><ArrowRightStartOnRectangleIcon /></span>
                 Logout
             </div>
-            <div class="flex items-center hover:bg-black/5 p-2 rounded-sm">
+            <div
+                class="flex items-center hover:bg-indigo-600 px-2 py-1 hover:text-white rounded-sm"
+            >
                 <img
                     src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxctjU21pUENIsGN1F4qY21P7GfdEbhTMp2g&s"
                     class="w-10 h-10 bg-gray-700 rounded-full mr-2"

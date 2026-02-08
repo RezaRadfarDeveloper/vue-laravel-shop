@@ -42,7 +42,7 @@
         </div>
         <div class="flex justify-between items-center w-full px-4">
             <span>Showing from {{ products.from }} to {{ products.to }}</span>
-            <nav class="">
+            <nav class="" v-if="products.total > products.limit">
                 <a
                     v-for="(link, i) in products.links"
                     :key="i"
@@ -86,7 +86,11 @@ export default {
         });
 
         const getProducts = (url = null) => {
-            store.dispatch("getProducts", { url });
+            store.dispatch("getProducts", {
+                url,
+                search: search.value,
+                perPage: perPage.value,
+            });
         };
 
         const getProductsForPage = (event, link) => {
