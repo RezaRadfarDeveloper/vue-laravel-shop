@@ -2,7 +2,10 @@
     <header
         class="flex justify-between items-center px-4 h-16 text-gray-700 bg-white"
     >
-        <button class="w-10 cursor-pointer rounded-[4px] hover:bg-black/5">
+        <button
+            @click="toggleSideBar"
+            class="w-10 cursor-pointer flex justify-center items-center rounded-[4px] hover:bg-black/5"
+        >
             <Bars3Icon />
         </button>
 
@@ -46,7 +49,7 @@ export default {
         UserIcon,
         ArrowRightStartOnRectangleIcon,
     },
-    setup() {
+    setup(props, { emit }) {
         const router = useRouter();
         const logout = () => {
             store
@@ -59,10 +62,13 @@ export default {
                 });
         };
         const currentUser = computed(() => store.state.user.data);
-
+        const toggleSideBar = () => {
+            emit("toggle-sidebar");
+        };
         return {
             currentUser,
             logout,
+            toggleSideBar,
         };
     },
 };
