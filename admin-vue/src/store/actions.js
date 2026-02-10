@@ -27,13 +27,13 @@ export const logout = ({ commit }) => {
 
 export const getProducts = (
     { commit },
-    { url = null, search = "", perPage = 10 },
+    { url = null, search = "", perPage = 10, sort_field, sort_direction },
 ) => {
     commit("setProducts", [true]);
     url = url || "/product";
     return axiosClient
         .get(url, {
-            params: { search, per_page: perPage },
+            params: { search, per_page: perPage, sort_field, sort_direction },
         })
         .then((response) => {
             console.log(response.data);

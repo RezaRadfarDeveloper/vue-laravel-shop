@@ -21,5 +21,7 @@ export const setProducts = (state, [loading, response = null]) => {
         state.products.limit = response.meta.per_page;
         state.products.page = response.meta.current_page;
     }
+    console.log(loading);
+
     state.products.isLoading = loading;
 };
