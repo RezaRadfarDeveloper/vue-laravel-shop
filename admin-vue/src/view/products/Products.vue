@@ -1,5 +1,6 @@
 <template>
-    <button @click="getProducts(null)">Add new product</button>
+    <button @click="showProductModal">Add new product</button>
+    <ProductModal v-model="showModal" :product="productModal" />
     <div>
         <span>per page</span>
         <select @change="getProducts(null)" v-model="perPage">
@@ -118,17 +119,27 @@ import Spinner from "../../ui/spinner.vue";
 import store from "../../store";
 import { PRODUCTS_PER_PAGE } from "../../constants";
 import ColumnTitleCell from "../../ui/ColumnTitleCell.vue";
+import ProductModal from "./ProductModal.vue";
 
 export default {
     components: {
         Spinner,
         ColumnTitleCell,
+        ProductModal,
     },
     setup() {
         const perPage = ref(PRODUCTS_PER_PAGE);
         const search = ref("");
         const sortField = ref("updated_at");
         const sortDirection = ref("desc");
+        const showModal = ref(false);
+        const productModal = ref({
+            id: "",
+            title: "",
+            price: "",
+            description: "",
+            image: "",
+        });
 
         const products = computed(() => store.state.products);
 
@@ -163,6 +174,10 @@ export default {
             });
         };
 
+        const showProductModal = () => {
+            showModal.value = true;
+        };
+
         const getProductsForPage = (event, link) => {
             if (!link.url || link.active) return;
             getProducts(link.url);
@@ -176,7 +191,10 @@ export default {
             products,
             sortField,
             sortDirection,
+            showModal,
             sortProduct,
+            showProductModal,
+            productModal,
         };
     },
 };
