@@ -1,5 +1,4 @@
 import axiosClient from "../axios";
-import router from "../router";
 
 export const getUser = ({ commit }) => {
     return axiosClient.get("/user").then((response) => {
@@ -30,7 +29,7 @@ export const getProducts = (
     { url = null, search = "", perPage = 10, sort_field, sort_direction },
 ) => {
     commit("setProducts", [true]);
-    url = url || "/product";
+    url = url || "/products";
     return axiosClient
         .get(url, {
             params: { search, per_page: perPage, sort_field, sort_direction },
@@ -43,4 +42,38 @@ export const getProducts = (
         .catch((err) => {
             commit("setProducts", [false]);
         });
+};
+
+export const createProduct = ({ commit }, product) => {
+    console.log(product.image instanceof File);
+    console.log(product);
+
+    if (product.image instanceof File) {
+        const form = new FormData();
+        form.append("title", product.title);
+        form.append("price", product.price);
+        form.append("image", product.image);
+        form.append("description", product.description);
+        product = form;
+    }
+
+    return axiosClient.post("products", product);
+};
+
+export const updateProduct = ({ commit }, product) => {
+    const id = product.id;
+    if (product.image instanceof File) {
+        const form = new FormData();
+        form.append("id", product.id);
+        form.append("title", product.title);
+        form.append("price", product.price);
+        form.append("image", product.image);
+        form.append("description", product.description);
+        form.append("_method", "PUT");
+        product = form;
+    } else {
+        product._method = "PUT";
+    }
+
+    return axiosClient.post(`products/${id}`, product);
 };

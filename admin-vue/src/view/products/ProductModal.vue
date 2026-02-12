@@ -4,9 +4,16 @@
         v-if="show"
         class="fixed z-10 left-0 top-0 w-screen h-screen bg-gray-400/50 bg-opacity-10 flex justify-center items-center"
     >
+        <div
+            v-if="isLoading"
+            class="rounded min-h-3/5 bg-white w-[80%] shadow-xl p-8 flex flex-col justify-center items-center"
+        >
+            <Spinner />
+        </div>
         <form
             @submit.prevent="onSubmit"
-            class="rounded bg-white h-auto w-[80%] shadow-xl p-8 flex flex-col justify-center items-center"
+            v-else
+            class="rounded bg-white min-h-3/5 w-[80%] shadow-xl p-8 flex flex-col justify-center items-center"
         >
             <h2 class="text-base/7 font-semibold text-gray-900 mb-8">
                 {{
@@ -61,19 +68,15 @@
                 />
             </div>
             <div class="flex w-[40%] items-center justify-between mb-8">
-                <label
-                    for="first-name"
-                    class="text-sm/6 font-medium text-gray-900"
-                >
+                <label for="image" class="text-sm/6 font-medium text-gray-900">
                     Image:</label
                 >
 
                 <input
                     type="file"
-                    name="first-name"
-                    id="first-name"
-                    @change="(file) => (product.image = file)"
-                    autocomplete="given-name"
+                    name="image"
+                    id="image"
+                    @change="product.image = $event.target.files[0]"
                     class="block w-[70%] rounded-md cursor-pointer bg-white px-3 py-1.5 text-base text-gray-900 outline-1 -outline-offset-1 outline-gray-300 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                 />
             </div>
@@ -100,12 +103,14 @@
 import { UserCircleIcon } from "@heroicons/vue/24/solid";
 import { computed, ref } from "vue";
 import store from "../../store";
+import Spinner from "../../ui/spinner.vue";
 
 export default {
     props: ["modelValue", "product"],
     emits: ["update:modelValue", "close"],
     components: {
         UserCircleIcon,
+        Spinner,
     },
 
     setup(props, { emit }) {
@@ -136,7 +141,7 @@ export default {
                         isLoading.value = false;
                         if (response.status === 200) {
                             //TBD show message
-                            store.dispatch("getProducts");
+                            store.dispatch("getProducts", {});
                             closeModal();
                         }
                     });
@@ -147,7 +152,7 @@ export default {
                         isLoading.value = false;
                         if (response.status === 201) {
                             //TBD show message
-                            store.dispatch("getProducts");
+                            store.dispatch("getProducts", {});
                             closeModal();
                         }
                     });
@@ -159,6 +164,7 @@ export default {
             closeModal,
             onSubmit,
             product,
+            isLoading,
         };
     },
 };
