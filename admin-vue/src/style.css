@@ -1,1 +1,20 @@
 @import "tailwindcss";
+
+@theme {
+    --font-sans:
+        "Instrument Sans", ui-sans-serif, system-ui, sans-serif,
+        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+        "Noto Color Emoji";
+
+    --animate-wiggle: wiggle 0.2s ease-in-out both;
+    @keyframes wiggle {
+        0% {
+            transform: translateY(-1rem);
+            opacity: 0;
+        }
+        100% {
+            transform: translateY(0rem);
+            opacity: 1;
+        }
+    }
+}

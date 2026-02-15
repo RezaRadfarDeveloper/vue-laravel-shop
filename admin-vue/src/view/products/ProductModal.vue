@@ -101,12 +101,12 @@
 
 <script>
 import { UserCircleIcon } from "@heroicons/vue/24/solid";
-import { computed, ref } from "vue";
+import { computed, onUpdated, ref } from "vue";
 import store from "../../store";
 import Spinner from "../../ui/spinner.vue";
 
 export default {
-    props: ["modelValue", "product"],
+    props: ["modelValue", "productModal"],
     emits: ["update:modelValue", "close"],
     components: {
         UserCircleIcon,
@@ -115,11 +115,11 @@ export default {
 
     setup(props, { emit }) {
         const product = ref({
-            id: props.product.id,
-            title: props.product.title,
-            price: props.product.price,
-            image: props.product.image,
-            description: props.product.description,
+            id: "",
+            title: "",
+            price: "",
+            image: "",
+            description: "",
         });
         const isLoading = ref(false);
 
@@ -127,10 +127,15 @@ export default {
             get: () => props.modelValue,
             set: (value) => emit("update:modelValue", value),
         });
+
         const closeModal = () => {
             show.value = false;
             emit("close");
         };
+
+        onUpdated(() => {
+            if (props.productModal) product.value = props.productModal;
+        });
 
         const onSubmit = () => {
             isLoading.value = true;

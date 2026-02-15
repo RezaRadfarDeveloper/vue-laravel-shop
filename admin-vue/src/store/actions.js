@@ -26,7 +26,13 @@ export const logout = ({ commit }) => {
 
 export const getProducts = (
     { commit },
-    { url = null, search = "", perPage = 10, sort_field, sort_direction },
+    {
+        url = null,
+        search = "",
+        perPage = 10,
+        sort_field,
+        sort_direction,
+    } = null,
 ) => {
     commit("setProducts", [true]);
     url = url || "/products";
@@ -42,6 +48,10 @@ export const getProducts = (
         .catch((err) => {
             commit("setProducts", [false]);
         });
+};
+
+export const getProduct = ({ commit }, id) => {
+    return axiosClient.get(`/products/${id}`);
 };
 
 export const createProduct = ({ commit }, product) => {
@@ -74,6 +84,11 @@ export const updateProduct = ({ commit }, product) => {
     } else {
         product._method = "PUT";
     }
+    console.log(product);
 
     return axiosClient.post(`products/${id}`, product);
+};
+
+export const deleteProduct = ({ commit }, id) => {
+    return axiosClient.delete(`/products/${id}`);
 };

@@ -66,8 +66,29 @@ class ProductController extends Controller
      */
     public function update(ProductRequest $request, Product $product)
     {
-        $product->update($request->validated());
+         $data = $request->validated();
+        $data['updated_by'] = $request->user()->id;
+
+        $image = $data['image'] ?? null;
+        if($image) {
+            $relativePath = $this->saveImage($image);
+            $data['image'] = URL::to(Storage::url($relativePath));
+
+            if($product->image) {
+                // Since we save image as url in database for vue simplicity 
+                // in frontend we need to access the  image folder as below
+                $oldImageFolder = str_replace(Storage::url('/'),"",dirname($product->image));       
+                Storage::deleteDirectory($oldImageFolder); 
+            
+        }
+        }
+
+        $product->update($data);
+          
+
         return new ProductResource($product);
+
+        
     }
 
     /**

@@ -1,6 +1,10 @@
 <template>
     <button @click="showProductModal">Add new product</button>
-    <ProductModal v-model="showModal" :product="productModal" />
+    <ProductModal
+        v-model="showModal"
+        @close="closeModalTest"
+        :productModal="productModal"
+    />
     <div>
         <span>per page</span>
         <select @change="getProducts(null)" v-model="perPage">
@@ -58,10 +62,14 @@
                         >Updated at</ColumnTitleCell
                     >
                 </div>
+                <div>
+                    <span>Actions</span>
+                </div>
                 <div
                     v-if="!products.isLoading"
-                    class="flex"
-                    v-for="product in products.data"
+                    class="flex animate-wiggle border-b-1 border-gray-400"
+                    :style="{ 'animation-delay': `${i * 0.05}s` }"
+                    v-for="(product, i) in products.data"
                 >
                     <div>{{ product.id }}</div>
                     <div>{{ product.title }}</div>
@@ -69,11 +77,19 @@
                     <div class="w-20 h-16">
                         <img
                             class="w-full h-full"
-                            :src="product.image"
+                            :src="product.image_url"
                             :alt="product.title"
                         />
                     </div>
                     <div>{{ product.updated_at }}</div>
+                    <div>
+                        <button @click="deleteProduct(product.id)">
+                            Delete <TrashIcon class="w-6 cursor-pointer" />
+                        </button>
+                        <button @click="editProduct(product.id)">
+                            Edit<PencilIcon class="w-6 cursor-pointer" />
+                        </button>
+                    </div>
                 </div>
                 <div
                     v-else
@@ -120,12 +136,15 @@ import store from "../../store";
 import { PRODUCTS_PER_PAGE } from "../../constants";
 import ColumnTitleCell from "../../ui/ColumnTitleCell.vue";
 import ProductModal from "./ProductModal.vue";
+import { PencilIcon, TrashIcon } from "@heroicons/vue/24/outline";
 
 export default {
     components: {
         Spinner,
         ColumnTitleCell,
         ProductModal,
+        TrashIcon,
+        PencilIcon,
     },
     setup() {
         const perPage = ref(PRODUCTS_PER_PAGE);
@@ -174,8 +193,38 @@ export default {
             });
         };
 
+        const deleteProduct = (id) => {
+            if (!confirm("Are you sure about deleting the product?")) return;
+            store.dispatch("deleteProduct", id).then((res) => getProducts());
+            console.log("deletes", id);
+        };
+        const editProduct = (id) => {
+            store.dispatch("getProduct", id).then(({ data }) => {
+                productModal.value = {
+                    id: data.data.id,
+                    title: data.data.title,
+                    description: data.data.description,
+                    image: data.data.image,
+                    price: data.data.price,
+                };
+            });
+            showProductModal();
+        };
+
         const showProductModal = () => {
             showModal.value = true;
+        };
+
+        const closeModalTest = () => {
+            console.log("close emit reached");
+
+            productModal.value = {
+                id: "",
+                title: "",
+                price: "",
+                description: "",
+                image: "",
+            };
         };
 
         const getProductsForPage = (event, link) => {
@@ -186,6 +235,9 @@ export default {
         return {
             getProducts,
             getProductsForPage,
+            deleteProduct,
+            editProduct,
+            closeModalTest,
             perPage,
             search,
             products,
