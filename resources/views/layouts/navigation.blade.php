@@ -5,15 +5,15 @@
             <div class="flex">
                 <!-- Logo -->
                 <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}">
+                    <a href="{{ route('product.index') }}">
                         <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
                 <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
-                        {{ __('Dashboard') }}
+                    <x-nav-link :href="route('product.index')" :active="request()->routeIs('dashboard')">
+                        Back to home
                     </x-nav-link>
                 </div>
             </div>
@@ -21,7 +21,12 @@
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
                 
-                    <div name="content" class="flex">                
+                    <div name="content" class="flex"> 
+                         <a
+                         href="{{route('cart-details')}}"
+                            class="inline-block px-5 py-1.5 dark:text-[#EDEDEC]   text-[#1b1b18]  text-sm leading-normal" >
+                            Shopping cart {{Session::has('cart') ? Session::get('cart')->totalQty : ''}}
+                        </a>               
                         <!-- Authentication -->                
                         @auth
                           <a

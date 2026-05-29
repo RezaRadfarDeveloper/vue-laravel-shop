@@ -6,7 +6,7 @@
         <Spinner />
     </div>
     <div v-else class="flex justify-between items-center">
-        <h1>Dashboard</h1>
+        <DoughnutChart />
     </div>
 </template>
 
@@ -15,10 +15,12 @@ import { useRouter } from "vue-router";
 import store from "../store";
 import { onMounted, ref } from "vue";
 import Spinner from "../ui/spinner.vue";
+import DoughnutChart from "../components/core/charts/DoughnutChart.vue";
 
 export default {
     components: {
         Spinner,
+        DoughnutChart,
     },
     setup() {
         const router = useRouter();
