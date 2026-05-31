@@ -2,6 +2,7 @@
 
 namespace App\Http\Helpers;
 
+
 class Cart {
 
 public $items = null;
@@ -65,8 +66,14 @@ public function removeItem($item,$id) {
     }
 }
 
+public function emptyCart() {
+   
+     $this->items = null;
+     $this->totalQty = 0;
+     $this->totalPrice= 0;
+}
 
-
-
-
+public function getCartItems() {
+    return [$this->items,$this->totalPrice];
+}
 }

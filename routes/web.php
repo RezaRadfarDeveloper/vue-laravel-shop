@@ -15,9 +15,10 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 //  TODO add middleware commented to the routes below
 // Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/orders', [OrderController::class, 'index'])->name('order.index');
-    Route::get('/orders/view/{order}', [OrderController::class, 'view'])->name('order.view');
+    Route::get('/order', [OrderController::class, 'index'])->name('order.index');
+    Route::get('/order/{order}', [OrderController::class, 'view'])->name('order.view');
     Route::post('/cart/checkout',[CheckoutController::class, 'checkout'])->name('cart.checkout');
+    Route::post('/checkout/{order}',[CheckoutController::class, 'checkoutSingleOrder'])->name('cart.checkout-single-order');
     Route::get('/checkout/success',[CheckoutController::class, 'success'])->name('checkout.success');
     Route::get('/checkout/failure',[CheckoutController::class, 'failure'])->name('checkout.failure');
 // });
