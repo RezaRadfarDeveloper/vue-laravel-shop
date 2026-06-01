@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Helpers\Cart;
 use App\Models\Order;
+use App\Models\OrderItem;
 use App\Models\Payment;
 use Exception;
 use Illuminate\Http\Request;
@@ -32,7 +33,11 @@ class CheckoutController extends Controller
             ],
             'quantity' =>$product['qty'],
         ];
-
+          $orderItems[] = [
+        'product_id' => $product['item']['id'],
+       'unit_price' => $product['item']['price'],
+       'quantity' => $product['qty']
+          ];
       };
 
       // dd($line_Items);
@@ -57,7 +62,11 @@ class CheckoutController extends Controller
         }
 
         $order = Order::create($orderDetails);
-
+      
+        foreach($orderItems as $orderItem) {
+          $orderItem['order_id'] = $order->id;
+          OrderItem::create($orderItem);
+        }
 
         $paymentDetails = [
           'type'=>'cc',
@@ -71,9 +80,6 @@ class CheckoutController extends Controller
 
         $payment = Payment::create($paymentDetails);
        
-
-
-
 return redirect($checkout_session->url);
     }
 
@@ -125,6 +131,33 @@ try {
     }
 
     public function checkoutSingleOrder(Order $order, Request $request) {
-      dd($order);
+
+      $user = $request->user();
+      $stripe = new \Stripe\StripeClient(getenv('STRIPE_SECRET_KEY'));
+      $line_Items = [];
+      foreach($order->items as $item) {
+            $line_Items[]= [
+                      'price_data' => [
+                          'currency' => 'usd',
+                          'product_data' => [
+                            'name' => $item->product->title,
+                          ],
+                          'unit_amount' =>$item->unit_price * 100,
+                        ],
+                        'quantity' =>$item->quantity,
+                    ];
+      }
+
+       $checkout_session = $stripe->checkout->sessions->create([
+          'line_items' => $line_Items,
+          'mode' => 'payment',
+          'success_url' => route("checkout.success",[],true).'?session_id={CHECKOUT_SESSION_ID}',
+        ]);
+
+        $order->payment->session_id = $checkout_session->id;
+        $order->payment->save();
+
+        return redirect($checkout_session->url);
+
     }
 }
