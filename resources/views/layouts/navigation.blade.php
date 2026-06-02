@@ -42,6 +42,11 @@
                           class="inline-block px-5 py-1.5 dark:text-[#EDEDEC]  text-[#1b1b18]  text-sm leading-normal" >
                            Profile
                         </a>
+                        <a 
+                           href="{{ route('order.index') }}"
+                          class="inline-block px-5 py-1.5 dark:text-[#EDEDEC]  text-[#1b1b18]  text-sm leading-normal" >
+                           orders
+                        </a>
                     @else
                         <a
                             href="{{ route('login') }}"
