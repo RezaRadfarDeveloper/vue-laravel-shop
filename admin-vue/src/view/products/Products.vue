@@ -23,7 +23,7 @@
             placeholder="Type to search products"
         />
 
-        <div>
+        <div class="bg-white">
             <div>
                 <div class="flex justify-around">
                     <ColumnTitleCell

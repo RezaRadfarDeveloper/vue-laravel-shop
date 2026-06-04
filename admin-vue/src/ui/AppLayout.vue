@@ -5,7 +5,7 @@
         <div class="flex-1 h-full">
             <NavBar @toggle-sidebar="toggleSidebar" />
             <main class="p-6">
-                <div class="bg-white p-4 rounded-md">
+                <div class="p-4 rounded-md">
                     <router-view></router-view>
                 </div>
             </main>

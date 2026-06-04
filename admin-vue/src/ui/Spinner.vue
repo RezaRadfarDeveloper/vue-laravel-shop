@@ -1,6 +1,7 @@
 <template>
     <svg
-        class="mr-3 -ml-1 size-8 w-12 h-12 animate-spin text-gray-700"
+        class="mr-3 -ml-1 size-8 w-9 h-9 animate-spin text-gray-700"
+        :class="class"
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
         viewBox="0 0 24 24"
@@ -20,3 +21,12 @@
         ></path>
     </svg>
 </template>
+<!-- <script>
+export default {
+    props: {
+        class: { type: String, default: "py-8" },
+        likes: Number,
+    },
+    setup(props) {},
+};
+</script> -->
