@@ -115,7 +115,11 @@ export default {
             });
         const fetchIncome = () =>
             axiosClient.get("/dashboard/income").then(({ data }) => {
-                totalIncome.value = data;
+                totalIncome.value = Intl.NumberFormat("en-us", {
+                    style: "currency",
+                    currency: "USD",
+                }).format(data);
+
                 isLoadingDetails.value.totalIncome = false;
             });
 
