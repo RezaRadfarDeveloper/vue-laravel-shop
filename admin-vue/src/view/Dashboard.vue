@@ -11,7 +11,7 @@
         <div
             class="bg-white px-4 py-4 flex flex-col items-center rounded-lg shadow"
         >
-            <label>Active Users</label>
+            <label class="font-semibold text-lg">Active Users</label>
             <template v-if="isLoadingDetails.customerCount">
                 <Spinner class="m-0" />
             </template>
@@ -21,7 +21,7 @@
         <div
             class="bg-white px-4 py-4 flex flex-col items-center rounded-lg shadow"
         >
-            <label>Active Products</label>
+            <label class="font-semibold text-lg">Active Products</label>
             <template v-if="isLoadingDetails.productsCount">
                 <Spinner class="m-0" />
             </template>
@@ -31,7 +31,7 @@
         <div
             class="bg-white px-4 py-4 flex flex-col items-center rounded-lg shadow"
         >
-            <label>Paid Orders</label>
+            <label class="font-semibold text-lg">Paid Orders</label>
             <template v-if="isLoadingDetails.ordersCount">
                 <Spinner class="m-0" />
             </template>
@@ -41,7 +41,7 @@
         <div
             class="bg-white px-4 py-4 flex flex-col items-center rounded-lg shadow"
         >
-            <label>Total Income</label>
+            <label class="font-semibold text-lg">Total Income</label>
             <template v-if="isLoadingDetails.totalIncome">
                 <Spinner class="m-0" />
             </template>
@@ -55,10 +55,44 @@
         <div
             class="bg-white px-4 py-4 flex flex-col items-center rounded-lg shadow"
         >
-            customer
+            <label class="font-semibold text-lg block mb-2"
+                >Latest customers</label
+            >
+            <template v-if="isLoadingDetails.latestCustomers">
+                <Spinner class="m-0" />
+            </template>
+            <div v-else>
+                <router-link
+                    to="/app"
+                    class="flex mb-3 flex-1 px-3 py-2 items-center bg-gray-50"
+                    v-for="customer in latestCustomers"
+                    :key="customer.id"
+                >
+                    <div
+                        class="w-10 h-10 bg-gray-200 rounded-full flex justify-center items-center mr-3"
+                    >
+                        <UserIcon class="w-5" />
+                    </div>
+                    <div class="mb-2 flex flex-col">
+                        <h3>
+                            {{ customer.first_name }} {{ customer.last_name }}
+                        </h3>
+                        <p>{{ customer.email }}</p>
+                    </div>
+                </router-link>
+            </div>
         </div>
-        <div class="flex bg-white justify-between items-center p-4">
-            <DoughnutChart :width="300" :height="400" />
+        <div class="flex bg-white justify-center items-center p-4">
+            <template v-if="isLoadingDetails.ordersByCountry">
+                <Spinner class="m-0" />
+            </template>
+            <template v-else>
+                <DoughnutChart
+                    :width="300"
+                    :height="400"
+                    :data="ordersByCountry"
+                />
+            </template>
         </div>
         <div
             class="bg-white px-5 py-4 flex flex-col items-center rounded-lg shadow"
@@ -70,6 +104,7 @@
 
 <script>
 import { useRouter } from "vue-router";
+import { UserIcon } from "@heroicons/vue/24/outline";
 import store from "../store";
 import { onMounted, ref } from "vue";
 import Spinner from "../ui/spinner.vue";
@@ -81,6 +116,7 @@ export default {
     components: {
         Spinner,
         DoughnutChart,
+        UserIcon,
     },
     setup() {
         const router = useRouter();
@@ -90,12 +126,16 @@ export default {
         const productsCount = ref(0);
         const ordersCount = ref(0);
         const totalIncome = ref(0);
+        const ordersByCountry = ref([]);
+        const latestCustomers = ref([]);
 
         const isLoadingDetails = ref({
             customerCount: true,
             productsCount: true,
             ordersCount: true,
             totalIncome: true,
+            ordersByCountry: true,
+            latestCustomers: true,
         });
 
         const fetchCustomers = () =>
@@ -122,6 +162,44 @@ export default {
 
                 isLoadingDetails.value.totalIncome = false;
             });
+
+        const fetchOrdersByCountry = () =>
+            axiosClient
+                .get("/dashboard/orders-by-country")
+                .then(({ data: countries }) => {
+                    const chartData = {
+                        labels: [],
+                        datasets: [
+                            {
+                                backgroundColor: [
+                                    "#41B883",
+                                    "#E46651",
+                                    "#00D8FF",
+                                    "#DD1B16",
+                                ],
+                                data: [],
+                            },
+                        ],
+                    };
+                    console.log(countries);
+
+                    countries.forEach((country) => {
+                        chartData.labels.push(country.name);
+                        chartData.datasets[0].data.push(country.count);
+                    });
+                    console.log(chartData);
+
+                    isLoadingDetails.value.ordersByCountry = false;
+                    ordersByCountry.value = chartData;
+                });
+
+        const fetchLatestCustomers = () =>
+            axiosClient
+                .get("/dashboard/latest-customers")
+                .then(({ data: customers }) => {
+                    latestCustomers.value = customers;
+                    isLoadingDetails.value.latestCustomers = false;
+                });
 
         const logout = () => {
             store
@@ -154,6 +232,8 @@ export default {
             fetchProducts();
             fetchOrders();
             fetchIncome();
+            fetchOrdersByCountry();
+            fetchLatestCustomers();
         });
 
         return {
@@ -164,6 +244,8 @@ export default {
             productsCount,
             ordersCount,
             totalIncome,
+            ordersByCountry,
+            latestCustomers,
         };
     },
 };

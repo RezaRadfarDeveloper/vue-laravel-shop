@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Models\Country;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -16,8 +17,11 @@ class ProfileController extends Controller
      */
     public function edit(Request $request): View
     {
+        $countries = Country::all();
+
         return view('profile.edit', [
             'user' => $request->user(),
+            'countries'=> $countries
         ]);
     }
 
@@ -26,7 +30,11 @@ class ProfileController extends Controller
      */
     public function update(ProfileUpdateRequest $request): RedirectResponse
     {
+        
         $request->user()->fill($request->validated());
+        $customer =  $request->user()->customer;
+        $customer->country_code = $request->country;
+        $customer->update();
 
         if ($request->user()->isDirty('email')) {
             $request->user()->email_verified_at = null;

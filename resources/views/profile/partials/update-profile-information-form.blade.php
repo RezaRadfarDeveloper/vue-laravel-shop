@@ -21,6 +21,21 @@
             <x-input-label for="name" :value="__('Name')" />
             <x-text-input id="name" name="name" type="text" class="mt-1 block w-full" :value="old('name', $user->name)" required autofocus autocomplete="name" />
             <x-input-error class="mt-2" :messages="$errors->get('name')" />
+                <select name="country" id="country">
+                    @foreach($countries as $country)
+                   <option value="{{$country->code}}">{{$country->name}}</option>
+                   @endforeach
+                </select>
+                <select name="state"  id="state">
+                   <option value="vic">VIC</option>
+                   <option value="nsw">NSW</option>
+                   <option value="nt">NT</option>
+                   <option value="wa">WA</option>
+                   <option value="sa">SA</option>
+                   <option value="qld">QLD</option>
+                   <option value="tas">TAS</option>
+                </select>
+
         </div>
 
         <div>

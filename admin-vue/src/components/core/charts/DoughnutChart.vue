@@ -6,16 +6,17 @@
 import { Chart as ChartJS, ArcElement, Tooltip, Legend } from "chart.js";
 import { Doughnut } from "vue-chartjs";
 // import * as doughnutConfig from "./doughnutConfig.js";
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 
 ChartJS.register(ArcElement, Tooltip, Legend);
 
 export default {
     name: "DoughnutChart",
+    props: ["data"],
     components: {
         Doughnut,
     },
-    setup() {
+    setup(props) {
         const data = ref({
             labels: ["VueJs", "EmberJs", "ReactJs", "AngularJs"],
             datasets: [
@@ -31,7 +32,9 @@ export default {
             ],
         });
         const options = ref({ responsive: true, maintainAspectRatio: false });
-
+        onMounted(() => {
+            data.value = props.data;
+        });
         return { data, options };
     },
 };
