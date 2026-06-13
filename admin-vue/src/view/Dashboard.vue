@@ -94,10 +94,25 @@
                 />
             </template>
         </div>
-        <div
-            class="bg-white px-5 py-4 flex flex-col items-center rounded-lg shadow"
-        >
-            Products
+        <div class="bg-white px-5 py-4 rounded-lg shadow">
+            <div v-for="order in latestOrders" :key="order.id">
+                <span>
+                    <router-link
+                        :to="{
+                            name: 'app.orders.view',
+                            params: { id: order.id },
+                        }"
+                        class="text-indigo-700"
+                        >Order #{{ order.id }}
+                    </router-link>
+                    includes {{ order.count }} items,
+                    {{ order.total_price }}</span
+                >
+                <span class="flex items-center justify-between">
+                    <span>{{ order.first_name }} {{ order.last_name }}</span>
+                    <span>{{ order.created_at }}</span>
+                </span>
+            </div>
         </div>
     </div>
 </template>
@@ -128,6 +143,7 @@ export default {
         const totalIncome = ref(0);
         const ordersByCountry = ref([]);
         const latestCustomers = ref([]);
+        const latestOrders = ref([]);
 
         const isLoadingDetails = ref({
             customerCount: true,
@@ -136,6 +152,7 @@ export default {
             totalIncome: true,
             ordersByCountry: true,
             latestCustomers: true,
+            latestOrders: true,
         });
 
         const fetchCustomers = () =>
@@ -201,6 +218,12 @@ export default {
                     isLoadingDetails.value.latestCustomers = false;
                 });
 
+        const fetchLatestOrders = () =>
+            axiosClient.get("/dashboard/latest-orders").then(({ data }) => {
+                latestOrders.value = data;
+                isLoadingDetails.value.ordersCount = false;
+            });
+
         const logout = () => {
             store
                 .dispatch("logout")
@@ -234,6 +257,7 @@ export default {
             fetchIncome();
             fetchOrdersByCountry();
             fetchLatestCustomers();
+            fetchLatestOrders();
         });
 
         return {
@@ -246,6 +270,7 @@ export default {
             totalIncome,
             ordersByCountry,
             latestCustomers,
+            latestOrders,
         };
     },
 };
